@@ -531,23 +531,30 @@ select { cursor: pointer; }
 </style>
 
 <script>
+// 全域變數先宣告，確保手機端也能存取
+var isPlaying = false;
+
+function _setPlaying(state){
+  isPlaying = state;
+  document.getElementById('music-icon').textContent = state ? '❚❚' : '▶';
+  document.getElementById('music-status').textContent = state ? '播放中' : '已暫停';
+  document.getElementById('music-wave').style.display = state ? 'flex' : 'none';
+  var player = document.getElementById('music-player');
+  player.style.borderColor = state ? 'rgba(124,77,189,0.5)' : 'rgba(124,77,189,0.2)';
+  player.style.boxShadow = state ? '0 4px 24px rgba(124,77,189,0.28)' : '0 4px 20px rgba(30,26,46,0.12)';
+}
+
 function enterSite(){
-  const overlay = document.getElementById('entry-overlay');
+  var overlay = document.getElementById('entry-overlay');
   overlay.style.opacity = '0';
   overlay.style.pointerEvents = 'none';
-  setTimeout(()=>{ overlay.style.display='none'; }, 800);
+  setTimeout(function(){ overlay.style.display='none'; }, 800);
 
-  // 觸發音樂播放
-  const bgm = document.getElementById('bgm');
+  var bgm = document.getElementById('bgm');
   if(bgm){
-    bgm.play().then(()=>{
-      isPlaying = true;
-      document.getElementById('music-icon').textContent = '❚❚';
-      document.getElementById('music-status').textContent = '播放中';
-      document.getElementById('music-wave').style.display = 'flex';
-      document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.5)';
-      document.getElementById('music-player').style.boxShadow = '0 4px 24px rgba(124,77,189,0.28)';
-    }).catch(()=>{});
+    bgm.play().then(function(){
+      _setPlaying(true);
+    }).catch(function(){});
   }
 }
 </script>
@@ -898,25 +905,14 @@ function updateProgress(){
 <script>
 const bgm = document.getElementById('bgm');
 bgm.volume = 0.5;
-let isPlaying = false;
 
 function toggleMusic(){
   if(isPlaying){
     bgm.pause();
-    isPlaying = false;
-    document.getElementById('music-icon').textContent = '▶';
-    document.getElementById('music-status').textContent = '已暫停';
-    document.getElementById('music-wave').style.display = 'none';
-    document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.2)';
-    document.getElementById('music-player').style.boxShadow = '0 4px 20px rgba(30,26,46,0.12)';
+    _setPlaying(false);
   } else {
     bgm.play().then(()=>{
-      isPlaying = true;
-      document.getElementById('music-icon').textContent = '❚❚';
-      document.getElementById('music-status').textContent = '播放中';
-      document.getElementById('music-wave').style.display = 'flex';
-      document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.5)';
-      document.getElementById('music-player').style.boxShadow = '0 4px 24px rgba(124,77,189,0.28)';
+      _setPlaying(true);
     }).catch(()=>{
       document.getElementById('music-status').textContent = '請再點一次';
     });
@@ -924,10 +920,7 @@ function toggleMusic(){
 }
 
 bgm.addEventListener('ended', ()=>{
-  isPlaying = false;
-  document.getElementById('music-icon').textContent = '▶';
-  document.getElementById('music-status').textContent = '點擊播放';
-  document.getElementById('music-wave').style.display = 'none';
+  _setPlaying(false);
 });
 </script>
 
