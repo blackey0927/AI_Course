@@ -665,6 +665,11 @@ select { cursor: pointer; }
 </head>
 <body>
 
+<!-- 🎵 BGM：第一行讀取，確保任何裝置點擊後立即可播 -->
+<audio id="bgm" loop preload="auto">
+  <source src="__揉進了時光__Rolling_in_the_Time_.mp3" type="audio/mpeg">
+</audio>
+
 <div class="top-bar"></div>
 
 <!-- 開場遮罩：點擊進入觸發音樂自動播放 -->
@@ -738,6 +743,8 @@ function enterSite(){
     var audio = document.getElementById('bgm');
     if(!audio) return;
     audio.volume = 0.5;
+    // iOS Safari 需要先 load() 才能 play()
+    audio.load();
     var playPromise = audio.play();
     if(playPromise !== undefined){
       playPromise.then(function(){
@@ -1126,10 +1133,7 @@ function updateProgress(){
   if(s2done) document.getElementById('step2').className = 'step-item done';
 }
 </script>
-<!-- 🎵 背景音樂播放器 -->
-<audio id="bgm" loop preload="auto">
-  <source src="__揉進了時光__Rolling_in_the_Time_.mp3" type="audio/mpeg">
-</audio>
+<!-- 🎵 音樂播放器（audio 已移至頂部） -->
 
 <div id="music-player" style="
   position:fixed; bottom:24px; left:24px; z-index:200;
