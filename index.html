@@ -733,12 +733,24 @@ function enterSite(){
   overlay.style.pointerEvents = 'none';
   setTimeout(function(){ overlay.style.display='none'; }, 800);
 
-  var bgm = document.getElementById('bgm');
-  if(bgm){
-    bgm.play().then(function(){
-      _setPlaying(true);
-    }).catch(function(){});
-  }
+  // 延遲一點再播，確保 DOM 完全就緒
+  setTimeout(function(){
+    var audio = document.getElementById('bgm');
+    if(!audio) return;
+    audio.volume = 0.5;
+    var playPromise = audio.play();
+    if(playPromise !== undefined){
+      playPromise.then(function(){
+        _setPlaying(true);
+      }).catch(function(e){
+        console.warn('音樂播放失敗：', e);
+        // 再試一次
+        setTimeout(function(){
+          audio.play().then(function(){ _setPlaying(true); }).catch(function(){});
+        }, 300);
+      });
+    }
+  }, 100);
 }
 </script>
 
@@ -1172,15 +1184,17 @@ function updateProgress(){
 </style>
 
 <script>
-const bgm = document.getElementById('bgm');
-bgm.volume = 0.5;
+const bgmPlayer = document.getElementById('bgm');
+if(bgmPlayer) bgmPlayer.volume = 0.5;
 
 function toggleMusic(){
+  var audio = document.getElementById('bgm');
+  if(!audio) return;
   if(isPlaying){
-    bgm.pause();
+    audio.pause();
     _setPlaying(false);
   } else {
-    bgm.play().then(()=>{
+    audio.play().then(()=>{
       _setPlaying(true);
     }).catch(()=>{
       document.getElementById('music-status').textContent = '請再點一次';
@@ -1188,7 +1202,7 @@ function toggleMusic(){
   }
 }
 
-bgm.addEventListener('ended', ()=>{
+document.getElementById('bgm').addEventListener('ended', ()=>{
   _setPlaying(false);
 });
 </script>
