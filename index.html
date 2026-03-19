@@ -770,5 +770,125 @@ function updateProgress(){
   if(s2done) document.getElementById('step2').className = 'step-item done';
 }
 </script>
+<!-- 🎵 背景音樂播放器 -->
+<audio id="bgm" loop preload="auto" autoplay>
+  <source src="__揉進了時光__Rolling_in_the_Time_.mp3" type="audio/mpeg">
+</audio>
+
+<div id="music-player" style="
+  position:fixed; bottom:24px; left:24px; z-index:200;
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,0.92);
+  border:1px solid rgba(124,77,189,0.2);
+  border-radius:100px;
+  padding:8px 18px 8px 10px;
+  box-shadow:0 4px 20px rgba(30,26,46,0.12);
+  backdrop-filter:blur(12px);
+  font-family:'Noto Sans TC',sans-serif;
+  font-size:12px; color:#4a4560;
+  cursor:pointer;
+  transition:box-shadow .2s, border-color .2s;
+  user-select:none;
+" onclick="toggleMusic()" title="點擊播放 / 暫停">
+  <div id="music-icon" style="
+    width:32px; height:32px; border-radius:50%;
+    background:linear-gradient(135deg,#7c4dbd,#b06fe0);
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px; flex-shrink:0;
+    box-shadow:0 2px 8px rgba(124,77,189,0.35);
+  ">▶</div>
+  <div style="min-width:0">
+    <div style="font-weight:600;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">揉進了時光</div>
+    <div style="font-size:10px;color:#9b8fc0;margin-top:1px" id="music-status">點擊開始播放</div>
+  </div>
+  <div id="music-wave" style="display:none;align-items:flex-end;gap:2px;height:16px;margin-left:2px">
+    <div class="wave-bar"></div><div class="wave-bar"></div>
+    <div class="wave-bar"></div><div class="wave-bar"></div>
+  </div>
+  <input id="vol-slider" type="range" min="0" max="1" step="0.05" value="0.5"
+    onclick="event.stopPropagation()"
+    oninput="document.getElementById('bgm').volume=this.value"
+    style="width:52px;accent-color:#7c4dbd;cursor:pointer;opacity:0.7"
+    title="音量調整">
+</div>
+
+<style>
+.wave-bar {
+  width:3px; background:#7c4dbd; border-radius:2px;
+  animation:waveAnim 0.7s ease-in-out infinite alternate;
+}
+.wave-bar:nth-child(1){height:5px;animation-delay:0s;}
+.wave-bar:nth-child(2){height:13px;animation-delay:0.18s;}
+.wave-bar:nth-child(3){height:8px;animation-delay:0.32s;}
+.wave-bar:nth-child(4){height:4px;animation-delay:0.46s;}
+@keyframes waveAnim{
+  from{transform:scaleY(0.3);}
+  to{transform:scaleY(1);}
+}
+</style>
+
+<script>
+const bgm = document.getElementById('bgm');
+bgm.volume = 0.5;
+let isPlaying = false;
+
+function toggleMusic(){
+  if(isPlaying){
+    bgm.pause();
+    isPlaying = false;
+    document.getElementById('music-icon').textContent = '▶';
+    document.getElementById('music-status').textContent = '已暫停';
+    document.getElementById('music-wave').style.display = 'none';
+    document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.2)';
+    document.getElementById('music-player').style.boxShadow = '0 4px 20px rgba(30,26,46,0.12)';
+  } else {
+    bgm.play().then(()=>{
+      isPlaying = true;
+      document.getElementById('music-icon').textContent = '❚❚';
+      document.getElementById('music-status').textContent = '播放中';
+      document.getElementById('music-wave').style.display = 'flex';
+      document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.5)';
+      document.getElementById('music-player').style.boxShadow = '0 4px 24px rgba(124,77,189,0.28)';
+    }).catch(()=>{
+      document.getElementById('music-status').textContent = '請再點一次';
+    });
+  }
+}
+
+bgm.addEventListener('ended', ()=>{
+  isPlaying = false;
+  document.getElementById('music-icon').textContent = '▶';
+  document.getElementById('music-status').textContent = '點擊播放';
+  document.getElementById('music-wave').style.display = 'none';
+});
+
+// 頁面載入後自動播放
+document.addEventListener('DOMContentLoaded', () => {
+  bgm.play().then(()=>{
+    isPlaying = true;
+    document.getElementById('music-icon').textContent = '❚❚';
+    document.getElementById('music-status').textContent = '播放中';
+    document.getElementById('music-wave').style.display = 'flex';
+    document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.5)';
+    document.getElementById('music-player').style.boxShadow = '0 4px 24px rgba(124,77,189,0.28)';
+  }).catch(()=>{
+    // 瀏覽器阻擋自動播放，等使用者第一次點擊頁面任意處後播放
+    document.getElementById('music-status').textContent = '點擊頁面開始';
+    const autoStart = () => {
+      bgm.play().then(()=>{
+        isPlaying = true;
+        document.getElementById('music-icon').textContent = '❚❚';
+        document.getElementById('music-status').textContent = '播放中';
+        document.getElementById('music-wave').style.display = 'flex';
+        document.getElementById('music-player').style.borderColor = 'rgba(124,77,189,0.5)';
+        document.getElementById('music-player').style.boxShadow = '0 4px 24px rgba(124,77,189,0.28)';
+      });
+      document.removeEventListener('click', autoStart);
+    };
+    document.addEventListener('click', autoStart);
+  });
+});
+</script>
+
 </body>
 </html>
