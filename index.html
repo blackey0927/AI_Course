@@ -665,10 +665,7 @@ select { cursor: pointer; }
 </head>
 <body>
 
-<!-- 🎵 BGM：第一行讀取，確保任何裝置點擊後立即可播 -->
-<audio id="bgm" loop preload="auto">
-  <source src="__揉進了時光__Rolling_in_the_Time_.mp3" type="audio/mpeg">
-</audio>
+
 
 <div class="top-bar"></div>
 
@@ -699,10 +696,10 @@ select { cursor: pointer; }
       backdrop-filter:blur(10px);
       animation:pulseBorder 2s ease-in-out infinite;
     ">
-      <span style="font-size:18px">♪</span> 點擊進入
+      <span style="font-size:18px">✦</span> 點擊進入
     </div>
     <div style="margin-top:20px;font-size:11px;color:rgba(180,138,255,0.4);letter-spacing:1px;font-family:'Noto Sans TC',sans-serif">
-      背景音樂將自動播放 · 可隨時暫停
+      OPS 專業課程 · 2026 Spring
     </div>
   </div>
 </div>
@@ -719,45 +716,12 @@ select { cursor: pointer; }
 </style>
 
 <script>
-// 全域變數先宣告，確保手機端也能存取
-var isPlaying = false;
-
-function _setPlaying(state){
-  isPlaying = state;
-  document.getElementById('music-icon').textContent = state ? '❚❚' : '▶';
-  document.getElementById('music-status').textContent = state ? '播放中' : '已暫停';
-  document.getElementById('music-wave').style.display = state ? 'flex' : 'none';
-  var player = document.getElementById('music-player');
-  player.style.borderColor = state ? 'rgba(124,77,189,0.5)' : 'rgba(124,77,189,0.2)';
-  player.style.boxShadow = state ? '0 4px 24px rgba(124,77,189,0.28)' : '0 4px 20px rgba(30,26,46,0.12)';
-}
 
 function enterSite(){
   var overlay = document.getElementById('entry-overlay');
   overlay.style.opacity = '0';
   overlay.style.pointerEvents = 'none';
   setTimeout(function(){ overlay.style.display='none'; }, 800);
-
-  // 延遲一點再播，確保 DOM 完全就緒
-  setTimeout(function(){
-    var audio = document.getElementById('bgm');
-    if(!audio) return;
-    audio.volume = 0.5;
-    // iOS Safari 需要先 load() 才能 play()
-    audio.load();
-    var playPromise = audio.play();
-    if(playPromise !== undefined){
-      playPromise.then(function(){
-        _setPlaying(true);
-      }).catch(function(e){
-        console.warn('音樂播放失敗：', e);
-        // 再試一次
-        setTimeout(function(){
-          audio.play().then(function(){ _setPlaying(true); }).catch(function(){});
-        }, 300);
-      });
-    }
-  }, 100);
 }
 </script>
 
@@ -1133,83 +1097,7 @@ function updateProgress(){
   if(s2done) document.getElementById('step2').className = 'step-item done';
 }
 </script>
-<!-- 🎵 音樂播放器（audio 已移至頂部） -->
 
-<div id="music-player" style="
-  position:fixed; bottom:24px; left:24px; z-index:200;
-  display:flex; align-items:center; gap:10px;
-  background:rgba(255,255,255,0.92);
-  border:1px solid rgba(124,77,189,0.2);
-  border-radius:100px;
-  padding:8px 18px 8px 10px;
-  box-shadow:0 4px 20px rgba(30,26,46,0.12);
-  backdrop-filter:blur(12px);
-  font-family:'Noto Sans TC',sans-serif;
-  font-size:12px; color:#4a4560;
-  cursor:pointer;
-  transition:box-shadow .2s, border-color .2s;
-  user-select:none;
-" onclick="toggleMusic()" title="點擊播放 / 暫停">
-  <div id="music-icon" style="
-    width:32px; height:32px; border-radius:50%;
-    background:linear-gradient(135deg,#7c4dbd,#b06fe0);
-    display:flex; align-items:center; justify-content:center;
-    font-size:15px; flex-shrink:0;
-    box-shadow:0 2px 8px rgba(124,77,189,0.35);
-  ">▶</div>
-  <div style="min-width:0">
-    <div style="font-weight:600;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">揉進了時光</div>
-    <div style="font-size:10px;color:#9b8fc0;margin-top:1px" id="music-status">點擊開始播放</div>
-  </div>
-  <div id="music-wave" style="display:none;align-items:flex-end;gap:2px;height:16px;margin-left:2px">
-    <div class="wave-bar"></div><div class="wave-bar"></div>
-    <div class="wave-bar"></div><div class="wave-bar"></div>
-  </div>
-  <input id="vol-slider" type="range" min="0" max="1" step="0.05" value="0.5"
-    onclick="event.stopPropagation()"
-    oninput="document.getElementById('bgm').volume=this.value"
-    style="width:52px;accent-color:#7c4dbd;cursor:pointer;opacity:0.7"
-    title="音量調整">
-</div>
-
-<style>
-.wave-bar {
-  width:3px; background:#7c4dbd; border-radius:2px;
-  animation:waveAnim 0.7s ease-in-out infinite alternate;
-}
-.wave-bar:nth-child(1){height:5px;animation-delay:0s;}
-.wave-bar:nth-child(2){height:13px;animation-delay:0.18s;}
-.wave-bar:nth-child(3){height:8px;animation-delay:0.32s;}
-.wave-bar:nth-child(4){height:4px;animation-delay:0.46s;}
-@keyframes waveAnim{
-  from{transform:scaleY(0.3);}
-  to{transform:scaleY(1);}
-}
-</style>
-
-<script>
-const bgmPlayer = document.getElementById('bgm');
-if(bgmPlayer) bgmPlayer.volume = 0.5;
-
-function toggleMusic(){
-  var audio = document.getElementById('bgm');
-  if(!audio) return;
-  if(isPlaying){
-    audio.pause();
-    _setPlaying(false);
-  } else {
-    audio.play().then(()=>{
-      _setPlaying(true);
-    }).catch(()=>{
-      document.getElementById('music-status').textContent = '請再點一次';
-    });
-  }
-}
-
-document.getElementById('bgm').addEventListener('ended', ()=>{
-  _setPlaying(false);
-});
-</script>
 
 </body>
 </html>
