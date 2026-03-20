@@ -999,7 +999,7 @@ function enterSite(){
         <div style="background:rgba(58,125,92,0.06);border:1px solid rgba(58,125,92,0.2);border-radius:12px;padding:14px 18px;margin-bottom:16px">
           <div style="font-size:13px;line-height:2;color:#3a6a4a">
             ✅ 系統已發送課程資訊至您的 Email，請確認收件匣（含垃圾信件夾）<br>
-            ✅ 匯款完成後請截圖私訊 FB 粉絲專頁，我們將於 24 小時內確認<br>
+            ✅ 匯款完成後請截圖，寄至 <a href="mailto:Blackey0927@gmail.com" style="color:var(--gold);font-weight:700">Blackey0927@gmail.com</a> 或私訊 FB 粉絲專頁，24 小時內確認<br>
             ✅ 核實後發送<strong>正式上課日期通知</strong>，即完成報名
           </div>
         </div>
@@ -1014,7 +1014,7 @@ function enterSite(){
 
   <div class="footer">
     SAKURASEI RIN × 靈織幻印 AI 課程 · 2026<br>
-    課程洽詢請至 Facebook 粉絲專頁私訊
+    課程洽詢：<a href="mailto:Blackey0927@gmail.com" style="color:var(--accent)">Blackey0927@gmail.com</a> 或 Facebook 粉絲專頁私訊
   </div>
 </div>
 
@@ -1074,7 +1074,9 @@ function copyBankInfo(){
 帳號：404-50-465811
 戶名：蔡國獻
 金額：NT$ 2,500（1 堂）
-備註：請填寫您的姓名`;
+備註：請填寫您的姓名
+
+✉️ 匯款後請截圖寄至：Blackey0927@gmail.com`;
   navigator.clipboard.writeText(text).then(()=>{
     const btn = event.target;
     btn.textContent = '✅ 已複製！';
